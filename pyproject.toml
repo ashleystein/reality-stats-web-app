@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "reality-stats"
+version = "0.1.0"
+description = "Reality TV stats and analytics"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "boto3",
+    "dash",
+    "dash-ag-grid",
+    "dash-cytoscape",
+    "networkx",
+    "pandas"
+]
+
+# Name for the workspace. In the UI, your code will be grouped under this label.
+code_location_name = "reality-stats-web-app"
+
+# Python packaging configuration. It tells Python's build system how to
+# bundle your code if you were to install it as library.
+[tool.setuptools.packages.find]
+where = ["."] # Look in the current root directory for code.
+include = ["src*"] # Only include folders that start with "src".

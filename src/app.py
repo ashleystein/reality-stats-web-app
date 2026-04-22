@@ -3,12 +3,16 @@ import pandas as pd
 import os
 from dash import Dash, html, dcc
 from pathlib import Path
+from config import get_config
+
 src_path = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = Path(__file__).parent
 
 app = Dash(__name__,
            use_pages=True)
 server = app.server
+
+
 # Updated styles for a compact, centered look
 tab_style = {
     "padding": "0 20px",        # Horizontal padding creates the "breathing room"
@@ -54,5 +58,5 @@ html.Div(
 ])
 
 if __name__ == '__main__':
-
-    app.run(host='0.0.0.0', port=8050, debug=True)
+    config = get_config()
+    app.run(host='0.0.0.0', port=8050, debug=config.DEBUG)

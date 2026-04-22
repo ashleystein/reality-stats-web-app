@@ -14,7 +14,8 @@ dependencies = [
     "dash-ag-grid",
     "dash-cytoscape",
     "networkx",
-    "pandas"
+    "pandas",
+    "gunicorn"
 ]
 
 # Name for the workspace. In the UI, your code will be grouped under this label.

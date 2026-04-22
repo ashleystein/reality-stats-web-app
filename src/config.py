@@ -9,7 +9,7 @@ class BaseConfig:
     """Settings common to all environments."""
 
     # Generic app settings
-    APP_NAME: str = "RealityStats"
+    APP_NAME: str = "reality-stats"
     # Logging
     LOG_LEVEL: str = os.environ.get("LOG_LEVEL", "INFO")
 

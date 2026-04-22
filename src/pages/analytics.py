@@ -2,26 +2,27 @@ import dash
 import pandas as pd
 from dash import html, dcc, callback, Output, Input
 import dash_ag_grid as dag
-import aws
+import aws, utils
 import os
 import config as cfg
 from pathlib import Path
-environment = cfg.get_config().env
+
+
+
 SRC_DIR = os.path.dirname(os.path.dirname(os.path.abspath("RealityStats")))
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 data_folder = f"{ROOT_DIR}/data/"
 
 def get_display_data():
-    
-    df = pd.read_csv(data_folder + "reality_cast.csv")
-    insta = pd.read_csv(data_folder + "insta_latest.csv")
+    df = utils.get_asset("reality_cast.csv")
+    insta = utils.get_asset("insta_latest.csv")
 
     merged = df.merge(insta[["name", "insta_username"]], on="name", how="left")
     merged["IG Username"] = merged["insta_username"].apply(
         lambda u: f"[{u}](https://www.instagram.com/{u}/)" if pd.notna(u) and u else ""
     )
-    merged = merged.rename(columns={"name": "Contestant", "show": "Show", "season": "Season"})
+    merged = merged.renasme(columns={"name": "Contestant", "show": "Show", "season": "Season"})
     return merged[["Contestant", "Show", "Season", "IG Username"]]
 
 @callback(
@@ -29,7 +30,7 @@ def get_display_data():
     Input("show-filter", "value"),
 )
 def update_season_options(selected_shows):
-    cast_df = pd.read_csv(os.path.join(ROOT_DIR, "data", "reality_cast.csv"))
+    cast_df = utils.get_asset("reality_cast.csv")
     if selected_shows:
         cast_df = cast_df[cast_df["show"].isin(selected_shows)]
     seasons = sorted(cast_df["season"].dropna().unique().astype(int))
@@ -67,7 +68,7 @@ def show_person_details(selected_rows):
     row = selected_rows[0]
     name = row.get("Contestant", "Unknown")
 
-    df = pd.read_csv(data_folder + "reality_cast.csv")
+    df = utils.get_asset("reality_cast.csv")
     filtered_df = df[df['name'] == name][["hometown", "state", "job", "show"]].fillna("unknown")
     hometown = filtered_df.iloc[0]["hometown"]
     state = filtered_df.iloc[0]["state"]
@@ -82,11 +83,10 @@ def show_person_details(selected_rows):
     ])
 
 
-
 def get_cast_filter_options():
     """Load show and season filter options from reality_cast.csv."""
-    cast_path = os.path.join(ROOT_DIR, "data", "reality_cast.csv")
-    cast_df = pd.read_csv(cast_path)
+    cast_df = utils.get_asset("reality_cast.csv")
+    
     # Exclude rows where 'show' is a bare number (data quality issue)
     valid_shows = cast_df[~cast_df["show"].astype(str).str.match(r"^\d+$")]["show"]
     shows = sorted(valid_shows.dropna().unique())

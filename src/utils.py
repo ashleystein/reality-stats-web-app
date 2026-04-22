@@ -1,5 +1,19 @@
 import re
+import pandas as pd
 from pathlib import Path
+from config import get_config
+import aws
+
+ROOT_DIR = Path(__file__).resolve().parents[1]
+data_folder = f"{ROOT_DIR}/data/"
+
+env = get_config().env
+
+def get_asset(file: str) -> pd.Dataframe:
+    if env == "dev":
+        return pd.read_csv(data_folder + file)
+    else: # PROD
+        return aws.get_s3_file("reality_cast.csv")
 
 # String cleaning
 def clean_strings(raw_string, type=''):

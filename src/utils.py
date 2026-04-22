@@ -13,7 +13,7 @@ def get_asset(file: str) -> pd.DataFrame:
     if env == "dev":
         return pd.read_csv(data_folder + file)
     else: # PROD
-        return aws.get_s3_file("reality_cast.csv")
+        return aws.get_s3_file(file)
 
 # String cleaning
 def clean_strings(raw_string, type=''):

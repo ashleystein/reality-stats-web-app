@@ -2,14 +2,13 @@ import dash
 import pandas as pd
 from dash import html, dcc, callback, Output, Input
 import dash_ag_grid as dag
-import aws, utils
+import src.utils as utils
 import os
-import config as cfg
 from pathlib import Path
 
 
 
-SRC_DIR = os.path.dirname(os.path.dirname(os.path.abspath("RealityStats")))
+SRC_DIR = os.path.dirname(os.path.dirname(os.path.abspath("reality-stats-web-app")))
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 data_folder = f"{ROOT_DIR}/data/"
@@ -22,7 +21,7 @@ def get_display_data():
     merged["IG Username"] = merged["insta_username"].apply(
         lambda u: f"[{u}](https://www.instagram.com/{u}/)" if pd.notna(u) and u else ""
     )
-    merged = merged.renasme(columns={"name": "Contestant", "show": "Show", "season": "Season"})
+    merged = merged.rename(columns={"name": "Contestant", "show": "Show", "season": "Season"})
     return merged[["Contestant", "Show", "Season", "IG Username"]]
 
 @callback(

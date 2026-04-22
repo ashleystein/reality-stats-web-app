@@ -15,11 +15,9 @@ dependencies = [
     "dash-cytoscape",
     "networkx",
     "pandas",
-    "gunicorn"
+    "gunicorn",
+    "python-dotenv"
 ]
-
-# Name for the workspace. In the UI, your code will be grouped under this label.
-code_location_name = "reality-stats-web-app"
 
 # Python packaging configuration. It tells Python's build system how to
 # bundle your code if you were to install it as library.

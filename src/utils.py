@@ -1,15 +1,15 @@
 import re
 import pandas as pd
 from pathlib import Path
-from config import get_config
-import aws
+from src.config import get_config
+import src.aws as aws
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
 data_folder = f"{ROOT_DIR}/data/"
 
 env = get_config().env
 
-def get_asset(file: str) -> pd.Dataframe:
+def get_asset(file: str) -> pd.DataFrame:
     if env == "dev":
         return pd.read_csv(data_folder + file)
     else: # PROD

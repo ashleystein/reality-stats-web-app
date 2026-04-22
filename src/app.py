@@ -3,7 +3,7 @@ import pandas as pd
 import os
 from dash import Dash, html, dcc
 from pathlib import Path
-from config import get_config
+from src.config import get_config
 
 src_path = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = Path(__file__).parent

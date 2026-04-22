@@ -30,6 +30,6 @@ def get_secret(secret_name, region_name="us-east-1"):
 def get_s3_file(file, bucket='realitystats'):
     session = boto3.session.Session()
     s3 = session.client("s3")
-    obj = s3.get_object(Bucket='realitystats', Key=file)
+    obj = s3.get_object(Bucket=bucket, Key=f"data/{file}")
     df = pd.read_csv(io.BytesIO(obj['Body'].read()))
     return df

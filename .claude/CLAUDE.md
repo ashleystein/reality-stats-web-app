@@ -1,21 +1,15 @@
-# RealityStats Claude
+# reality-stats-web-app
 
 ## Project Overview
 
 <!-- A dashboard web application with Reality TV data. -->
-
-## Development Guidelines
-
-<!-- Add coding conventions, style guides, and best practices here
-
--->
 
 ## Architecture
 
 <!-- 
 Frontend: Made using Dash and Plotly
 Backend: ETL pipeline orchestrated using Dagster
-Infrastructure: AWS services
+Infrastructure: AWS services, ec2, CloudFront, Route 53
 -->
 
 ## Project Structure
@@ -43,11 +37,3 @@ RealityStats_Claude/
 ├── pyproject.toml
 └── .env
 ```
-
-## Commands
-
-<!-- List common commands used in this project -->
-
-## Notes
-
-<!-- Any additional context for Claude to be aware of -->

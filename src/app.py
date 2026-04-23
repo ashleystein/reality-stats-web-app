@@ -3,13 +3,18 @@ import pandas as pd
 import os
 from dash import Dash, html, dcc
 from pathlib import Path
-from src.config import get_config
+import src.config as config
 
 src_path = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = Path(__file__).parent
 
 app = Dash(__name__,
-           use_pages=True)
+           use_pages=True,
+           meta_tags=[{'name': 'viewport',
+                        'content': 'width=device-width, '
+                        'initial-scale=1.0, '
+                        'maximum-scale=1.2, minimum-scale=0.5,'}]
+                    )
 server = app.server
 
 
@@ -58,5 +63,5 @@ html.Div(
 ])
 
 if __name__ == '__main__':
-    config = get_config()
-    app.run(host='0.0.0.0', port=8050, debug=config.DEBUG)
+    cfg = config.get_config()
+    app.run(host='0.0.0.0', port=8050, debug=cfg.DEBUG)

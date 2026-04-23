@@ -5,10 +5,7 @@ import dash_ag_grid as dag
 import src.utils as utils
 import os
 from pathlib import Path
-
-
-
-SRC_DIR = os.path.dirname(os.path.dirname(os.path.abspath("reality-stats-web-app")))
+from urllib.parse import quote
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 data_folder = f"{ROOT_DIR}/data/"
@@ -19,8 +16,7 @@ def get_display_data():
 
     merged = df.merge(insta[["name", "insta_username"]], on="name", how="left")
     merged["IG Username"] = merged["insta_username"].apply(
-        lambda u: f"[{u}](https://www.instagram.com/{u}/)" if pd.notna(u) and u else ""
-    )
+            lambda u: f"[{u}](https://www.instagram.com/{quote(u, safe='')}/)" if pd.notna(u) and u else "")
     merged = merged.rename(columns={"name": "Contestant", "show": "Show", "season": "Season"})
     return merged[["Contestant", "Show", "Season", "IG Username"]]
 
@@ -34,7 +30,6 @@ def update_season_options(selected_shows):
         cast_df = cast_df[cast_df["show"].isin(selected_shows)]
     seasons = sorted(cast_df["season"].dropna().unique().astype(int))
     return [{"label": f"Season {s}", "value": s} for s in seasons]
-
 
 @callback(
     Output("my-table", "rowData"),
@@ -69,17 +64,21 @@ def show_person_details(selected_rows):
 
     df = utils.get_asset("reality_cast.csv")
     filtered_df = df[df['name'] == name][["hometown", "state", "job", "show"]].fillna("unknown")
-    hometown = filtered_df.iloc[0]["hometown"]
-    state = filtered_df.iloc[0]["state"]
-    job = filtered_df.iloc[0]["job"]
-    show = filtered_df.iloc[0]["show"]
 
-    return html.Div([
-        html.H3(row.get("Contestant")),
-        html.P(f"Rookie Season: {show}"),
-        html.P(f"Hometown: {hometown}, {state}"),
-        html.P(f"Civilian Job: {job}"),
-    ])
+    if filtered_df.empty:
+        return html.Div([html.H3(row.get("Contestant")), html.P("No details found.")])
+    else:
+        hometown = filtered_df.iloc[0]["hometown"]
+        state = filtered_df.iloc[0]["state"]
+        job = filtered_df.iloc[0]["job"]
+        show = filtered_df.iloc[0]["show"]
+
+        return html.Div([
+            html.H3(row.get("Contestant")),
+            html.P(f"Rookie Season: {show}"),
+            html.P(f"Hometown: {hometown}, {state}"),
+            html.P(f"Civilian Job: {job}"),
+        ])
 
 
 def get_cast_filter_options():
@@ -95,7 +94,11 @@ def get_cast_filter_options():
 _filter_shows, _filter_seasons = get_cast_filter_options()
 
 dash.register_page(__name__, path='/')
-main_grid_df = get_display_data().to_dict("records")
+try:
+    main_grid_df = get_display_data().to_dict("records")
+except Exception as e:
+    print(f"Warning: could not load display data: {e}")
+    main_grid_df = []
 
 
 ### Page HTML

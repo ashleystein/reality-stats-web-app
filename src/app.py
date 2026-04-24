@@ -68,4 +68,4 @@ html.Div(
 
 if __name__ == '__main__':
     cfg = config.get_config()
-    app.run(host='0.0.0.0', port=8050, debug=cfg.DEBUG)
+    app.run(host='127.0.0.1', port=8050, debug=cfg.DEBUG)

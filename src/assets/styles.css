@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
 * {
-    font-family: Arial, sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
 }
 
 .panel {
@@ -8,6 +10,10 @@
     border-radius: 4px;
     padding: 20px;
     box-sizing: border-box;
+}
+
+.ag-theme-alpine .ag-row:hover {
+    background-color: #FAE0E4 !important;
 }
 
 @media (max-width: 768px) {

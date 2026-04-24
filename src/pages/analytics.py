@@ -128,7 +128,7 @@ layout = html.Div([
     html.Div(
         id="error-banner",
         style={
-            "display": "block",
+            "display": "none",
             "color": "#8E6E75",
             "backgroundColor": "#FAE0E4",
             "padding": "10px 20px",
@@ -137,111 +137,95 @@ layout = html.Div([
         }
     ),
 
+    # TOP: FILTER BAR
     html.Div([
-
-        ########### LEFT: FILTERS
         html.Div([
-            html.H4("Filters", style={"color": "#8E6E75", "marginTop": "0"}),
+            html.Label("Contestant", style={"fontWeight": "bold", "color": "#8E6E75", "fontSize": "13px", "marginBottom": "4px"}),
+            dcc.Input(
+                id="contestant-search",
+                placeholder="Search contestant...",
+                debounce=True,
+                style={"width": "100%"}
+            ),
+        ], style={"flex": "1"}),
 
-            # --- SHOW FILTER ---
-            html.Label("Show", style={"fontWeight": "bold", "color": "#8E6E75", "fontSize": "13px"}),
+        html.Div([
+            html.Label("Show", style={"fontWeight": "bold", "color": "#8E6E75", "fontSize": "13px", "marginBottom": "4px"}),
             dcc.Dropdown(
                 id="show-filter",
                 options=[{"label": s, "value": s} for s in _filter_shows],
                 placeholder="Select Show",
-                multi=True, # Allows selecting multiple shows at once
-                style={"marginBottom": "20px"}
+                multi=True,
             ),
+        ], style={"flex": "2"}),
 
-            # --- SEASON FILTER ---
-            html.Label("Season", style={"fontWeight": "bold", "color": "#8E6E75", "fontSize": "13px"}),
+        html.Div([
+            html.Label("Season", style={"fontWeight": "bold", "color": "#8E6E75", "fontSize": "13px", "marginBottom": "4px"}),
             dcc.Dropdown(
                 id="season-filter",
                 options=[{"label": f"Season {s}", "value": s} for s in _filter_seasons],
                 placeholder="Select Season",
                 multi=True,
-                style={"marginBottom": "20px"}
             ),
-            # --- CONTESTANT SEARCH ---
-            html.Label("Contestant", style={"fontWeight": "bold", "color": "#8E6E75", "fontSize": "13px"}),
-            dcc.Input(
-                id="contestant-search",
-                placeholder="Search contestant...",
-                debounce=True,
-                style={"marginBottom": "20px", "width": "100%"}
-            ),
+        ], style={"flex": "1"}),
 
+    ], className="panel filter-bar", style={
+        "display": "flex",
+        "flexDirection": "row",
+        "gap": "16px",
+        "margin": "16px 16px 0 16px",
+        "alignItems": "flex-end",
+    }),
 
-        # Add more filters here easily!
-        ], style={
-                "width": "250px",  # Fixed width for sidebar
-                "backgroundColor": "white",
-                "padding": "25px",
-                "borderRight": "1px solid #E5D1D5",
-                "display": "flex",
-                "flexDirection": "column",
-                "height": "90%"
-            }
-        ),
-        ##### END OF LEFT
+    # 2-column CSS grid: table | details
+    html.Div([
 
-
-        ### MIDDLE: TABLE
-        dag.AgGrid(
-            id="my-table",
-            rowData=main_grid_df,      # The data
-            columnDefs=[
-                {"field": "Contestant"},
-                {"field": "Show"},
-                {"field": "Season"},
-
-                {
-                    "field": "IG Username",
-                    "cellRenderer": "markdown",
-                    "cellRendererParams": {"linkTarget": "_blank"},
+        # LEFT: TABLE
+        html.Div(className="panel", style={"padding": "0", "overflow": "hidden", "minHeight": "0"}, children=[
+            dag.AgGrid(
+                id="my-table",
+                rowData=main_grid_df,
+                columnDefs=[
+                    {"field": "Contestant"},
+                    {"field": "Show"},
+                    {"field": "Season"},
+                    {
+                        "field": "IG Username",
+                        "cellRenderer": "markdown",
+                        "cellRendererParams": {"linkTarget": "_blank"},
+                    },
+                ],
+                columnSize="sizeToFit",
+                columnSizeOptions={
+                    "defaultMinWidth": 100,
+                    "columnLimits": [{"key": "Contestant", "minWidth": 150}],
                 },
-                
-            ],
+                dashGridOptions={
+                    "pagination": True,
+                    "responsiveSizeToFit": True,
+                    "rowSelection": "single",
+                    "cacheBlockSize": 100,
+                    "maxBlocksInCache": 10,
+                },
+                style={"height": "100%", "width": "100%"}
+            ),
+        ]),
 
-            columnSize="sizeToFit",
-            columnSizeOptions={
-                "defaultMinWidth": 100,
-                "columnLimits": [{"key": "Contestant", "minWidth": 150}],
-            },
-            dashGridOptions={
-                "pagination": True,
-                "responsiveSizeToFit": True, # This is the magic toggle
-                "rowSelection": "single",
-                "cacheBlockSize": 100, 
-                "maxBlocksInCache": 10,
-            }, style={"height": "90vh", "width": "95%"}
+        # RIGHT: DETAILS
+        html.Div(
+            id="person-details",
+            className="details-panel panel",
+            children="Select a row to see details",
         ),
 
-    # RIGHT GRID
-    ], className="table-panel", style={
-                "display": "flex",           # Enable Flexbox
-                "justifyContent": "center",  # Center children horizontally within the 50% width
-                "alignItems": "center",      # Center children vertically
-                "height": "calc(100vh - 80px)",
-                "width": "70%",              # Occupy exactly half the container width
-                "backgroundColor": "#FAF3F4",
-                "boxSizing": "border-box",   # Ensures padding doesn't push width past 50%
-                "float": "left"              # Optional: Aligns the div to the left side
-            },
+    ], className="content-grid", style={
+        "display": "grid",
+        "gridTemplateColumns": "1fr 260px",
+        "gap": "16px",
+        "height": "calc(100vh - 180px)",
+        "padding": "16px",
+        "backgroundColor": "#FAF3F4",
+        "boxSizing": "border-box",
+    }),
 
-
-    ),
-    html.Div(
-            id="person-details",
-            className="details-panel",
-            style={
-                "flex": 1,
-                "border": "1px solid #ddd",
-                "padding": "10px",
-                "borderRadius": "4px",
-                "minWidth": "100px",
-            },
-            children="Select a row to see details",
-    ),
-], style={"margin": "0", "padding": "0", "display": "flex", "gap": "24px", "width": "100%"},
-)
+], style={"margin": "0", "padding": "0"})

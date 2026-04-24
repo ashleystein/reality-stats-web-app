@@ -9,6 +9,7 @@ src_path = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = Path(__file__).parent
 
 app = Dash(__name__,
+           title="Reality TV Data",
            use_pages=True,
            meta_tags=[{'name': 'viewport',
                         'content': 'width=device-width, '
@@ -39,21 +40,24 @@ tab_selected_style = {
 app.layout = html.Div([
 html.Div(
         style={
-            "backgroundColor": "#D8A7B1",  # Your muted pink background
-            "display": "flex",             # Puts children side-by-side
+            "backgroundColor": "#EDD9DC",
+            "display": "flex",
             "flexDirection": "row",
-            "alignItems": "center",        # Vertically aligns title and tabs
-            "padding": "0 20px",           # Horizontal padding
-            "height": "60px"               # Fixed height for a sleek bar
+            "alignItems": "center",
+            "justifyContent": "center",
+            "padding": "0 20px",
+            "height": "60px",
+            "borderRadius": "4px",
+            "margin": "12px 16px 0 16px",
         },
         children=[
-    html.H1('Reality Stats',
+    html.H1('Reality TV Data',
             style={
-                "color": "white",
+                "color": "#000000",
                 "margin": "0",
-                "marginRight": "40px",  # Space between title and tabs
-                "fontFamily": "sans-serif",
-                "fontSize": "24px"  # Slightly smaller to fit the bar
+                "fontSize": "28px",
+                "fontWeight": "600",
+                "letterSpacing": "2px"
             }),
   
         ]),

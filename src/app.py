@@ -21,7 +21,7 @@ server = app.server
 
 # Updated styles for a compact, centered look
 tab_style = {
-    "padding": "0 20px",        # Horizontal padding creates the "breathing room"
+    #"padding": "0 20px",        # Horizontal padding creates the "breathing room"
     "lineHeight": "40px",
     "border": "none",
     "backgroundColor": "transparent",

@@ -63,7 +63,7 @@ def update_table(selected_shows, selected_seasons, search_text):
         return filtered_df.to_dict("records"), ""
     except Exception as e:
         _logger.error("update_table failed: %s", e)
-        return []
+        return [], ERROR_MESSAGE
 
 @callback(
     Output("person-details", "children"),
@@ -73,13 +73,13 @@ def update_table(selected_shows, selected_seasons, search_text):
 )
 def show_person_details(selected_rows):
     if not selected_rows:
-        return "Select a row to see details", ""
+        return html.Div("Select a row to see details", style={"color": "#aaa", "fontStyle": "italic", "marginTop": "12px"}), ""
     try:
         row = selected_rows[0]
         name = row.get("Contestant", "Unknown")
 
         df = utils.get_asset("reality_cast.csv")
-        filtered_df = df[df['name'] == name][["hometown", "state", "job", "show"]].fillna("unknown")
+        filtered_df = df[df['name'] == name][["hometown", "state", "job", "show"]].fillna("—")
 
         if filtered_df.empty:
             return html.Div([html.H3(row.get("Contestant")), html.P("No details found.")]), ""
@@ -89,11 +89,29 @@ def show_person_details(selected_rows):
         job = filtered_df.iloc[0]["job"]
         show = filtered_df.iloc[0]["show"]
 
+        initials = "".join(w[0].upper() for w in name.split()[:2])
+
+        def detail_row(label, value):
+            return html.Div([
+                html.Span(label, style={"fontWeight": "600", "fontSize": "11px", "color": "#8E6E75", "textTransform": "uppercase", "letterSpacing": "0.5px"}),
+                html.Div(value, style={"fontSize": "14px", "color": "#222", "marginTop": "2px"}),
+            ], style={"marginBottom": "14px"})
+
         return html.Div([
-            html.H3(row.get("Contestant")),
-            html.P(f"Rookie Season: {show}"),
-            html.P(f"Hometown: {hometown}, {state}"),
-            html.P(f"Civilian Job: {job}"),
+            html.Div(initials, style={
+                "width": "56px", "height": "56px",
+                "borderRadius": "50%",
+                "backgroundColor": "#EDD9DC",
+                "color": "#8E6E75",
+                "display": "flex", "alignItems": "center", "justifyContent": "center",
+                "fontSize": "20px", "fontWeight": "700",
+                "marginBottom": "12px",
+            }),
+            html.H3(name, style={"margin": "0 0 4px 0", "fontSize": "17px", "fontWeight": "600"}),
+            html.Hr(style={"border": "none", "borderTop": "1px solid #E5D1D5", "margin": "12px 0"}),
+            detail_row("Show", show),
+            detail_row("Hometown", f"{hometown}, {state}"),
+            detail_row("Job", job),
         ]), ""
     except Exception as e:
         _logger.error("show_person_details failed: %s", e)
@@ -173,7 +191,7 @@ layout = html.Div([
         "display": "flex",
         "flexDirection": "row",
         "gap": "16px",
-        "margin": "16px 16px 0 16px",
+        "margin": "16px 0 0 0",
         "alignItems": "flex-end",
     }),
 
@@ -223,9 +241,9 @@ layout = html.Div([
         "gridTemplateColumns": "1fr 260px",
         "gap": "16px",
         "height": "calc(100vh - 180px)",
-        "padding": "16px",
-        "backgroundColor": "#FAF3F4",
+        "padding": "16px 0",
+        #"backgroundColor": "#F0E4E6",
         "boxSizing": "border-box",
     }),
 
-], style={"margin": "0", "padding": "0"})
+], style={"margin": "0", "padding": "0 2px"})

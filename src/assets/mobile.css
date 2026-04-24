@@ -1,0 +1,21 @@
+@media (max-width: 768px) {
+    #main-content-m {
+        flex-direction: column !important;
+    }
+    #table-panel-m {
+        width: 100% !important;
+        height: auto !important;
+        float: none !important;
+    }
+    #person-details-m {
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+    .details-panel {
+        display: none !important;
+    }
+    .table-panel {
+        width: 100% !important;
+        float: none !important;
+    }
+}
